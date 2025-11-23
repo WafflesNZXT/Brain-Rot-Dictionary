@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6366f1">
     <meta name="description" content="Decode Gen Z and Gen Alpha slang - A dictionary for parents">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NYDEE6F73P');
+    </script>
     <title>Brainrot Dictionary</title>
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJyYWlucm90IERpY3Rpb25hcnkiLAogICJzaG9ydF9uYW1lIjogIkJyYWlucm90IiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxZTFiNGIiLAogICJ0aGVtZV9jb2xvciI6ICIjNjM2NmYxIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3RleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCclM0Xwn6egJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
     <style>
@@ -750,9 +757,14 @@
             renderTerms(filtered);
         }
 
-        // Category buttons
+        // Category buttons with tracking
         document.getElementById('categories').addEventListener('click', (e) => {
             if (e.target.classList.contains('category-btn')) {
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'category_filter', {
+                        'category': e.target.dataset.category
+                    });
+                }
                 document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
                 e.target.classList.add('active');
                 currentCategory = e.target.dataset.category;
@@ -760,9 +772,16 @@
             }
         });
 
-        // Search
-        document.getElementById('searchBox').addEventListener('input', filterTerms);
-
+       // Search with tracking
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            if (e.target.value.length > 2 && typeof gtag !== 'undefined') {
+                gtag('event', 'search', {
+                    'search_term': e.target.value
+                });
+            }
+            filterTerms();
+        }); 
+        
         // PWA Install prompt
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -788,16 +807,19 @@
             navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZnVuY3Rpb24oZSkge30pOw==');
         }
 
-        // Random term button
-document.getElementById('randomBtn').addEventListener('click', () => {
-    const randomTerm = terms[Math.floor(Math.random() * terms.length)];
-    document.getElementById('searchBox').value = randomTerm.word;
-    currentCategory = 'all';
-    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector('[data-category="all"]').classList.add('active');
-    filterTerms();
-    window.scrollTo({ top: 300, behavior: 'smooth' });
-});
+       // Random term button with tracking
+        document.getElementById('randomBtn').addEventListener('click', () => {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'random_term_click');
+            }
+            const randomTerm = terms[Math.floor(Math.random() * terms.length)];
+            document.getElementById('searchBox').value = randomTerm.word;
+            currentCategory = 'all';
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('[data-category="all"]').classList.add('active');
+            filterTerms();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        });
 
         // Share button
         document.getElementById('shareBtn').addEventListener('click', async () => {
