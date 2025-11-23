@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="Decode Gen Z and Gen Alpha slang - A dictionary for parents">
+    <title>Brainrot Dictionary</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkJyYWlucm90IERpY3Rpb25hcnkiLAogICJzaG9ydF9uYW1lIjogIkJyYWlucm90IiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxZTFiNGIiLAogICJ0aGVtZV9jb2xvciI6ICIjNjM2NmYxIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3RleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCclM0Xwn6egJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #0f0e17;
+            --bg-secondary: #1e1b4b;
+            --text: #ffffff;
+            --text-secondary: #a8a29e;
+            --accent: #818cf8;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            padding: 20px;
+            background: var(--bg-secondary);
+            position: sticky;
+            top: 98px;
+            z-index: 99;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            overflow-x: auto;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .categories::-webkit-scrollbar {
+            height: 0;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--accent);
+            background: transparent;
+            color: var(--text);
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .terms-list {
+            padding: 20px;
+        }
+
+        .term-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .term-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .term-word {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .term-category {
+            font-size: 12px;
+            padding: 4px 12px;
+            background: var(--primary);
+            border-radius: 12px;
+        }
+
+        .term-definition {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .term-example {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--success);
+            padding: 12px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--success);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-results-emoji {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--primary);
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .install-prompt.show {
+            display: flex;
+        }
+
+        .install-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Brainrot Dictionary</h1>
+        <p>Decode what your kids are saying</p>
+    </div>
+
+    <div class="search-container">
+        <input type="text" class="search-box" id="searchBox" placeholder="Search for a term... (e.g., 'skibidi', 'gyat')">
+    </div>
+
+    <div class="categories" id="categories">
+        <button class="category-btn active" data-category="all">All</button>
+        <button class="category-btn" data-category="tiktok">TikTok</button>
+        <button class="category-btn" data-category="gaming">Gaming</button>
+        <button class="category-btn" data-category="meme">Meme</button>
+        <button class="category-btn" data-category="compliment">Compliment</button>
+    </div>
+
+    <div class="terms-list" id="termsList"></div>
+
+    <div class="install-prompt" id="installPrompt">
+        <span>📱 Install app for quick access</span>
+        <div>
+            <button class="install-btn" id="installBtn">Install</button>
+            <button class="close-btn" id="closePrompt">×</button>
+        </div>
+    </div>
+
+    <script>
+        // Dictionary data
+        const terms = [
+            {
+                word: "skibidi",
+                definition: "Nonsense word popularized by a viral YouTube series 'Skibidi Toilet'. Used as a general expression or to describe something as cool or crazy.",
+                example: "That trick was so skibidi!",
+                category: "tiktok"
+            },
+            {
+                word: "gyat",
+                definition: "An exclamation expressing admiration or surprise, often used when seeing someone attractive. Variation of 'goddamn'.",
+                example: "Gyat! Did you see that car?",
+                category: "tiktok"
+            },
+            {
+                word: "rizz",
+                definition: "Charisma or charm, especially in flirting or attracting romantic interest. Short for 'charisma'.",
+                example: "He's got so much rizz, everyone likes him.",
+                category: "compliment"
+            },
+            {
+                word: "sigma",
+                definition: "A self-reliant, independent person who doesn't follow trends. Based on 'alpha/beta' personality theory.",
+                example: "He's a real sigma, does his own thing.",
+                category: "meme"
+            },
+            {
+                word: "ohio",
+                definition: "Used to describe something weird, strange, or cursed. Ohio became a meme representing bizarre or unsettling content.",
+                example: "That video was so Ohio, I can't unsee it.",
+                category: "meme"
+            },
+            {
+                word: "bussin",
+                definition: "Really good, amazing, or delicious. Often used to describe food or experiences.",
+                example: "This pizza is bussin!",
+                category: "compliment"
+            },
+            {
+                word: "no cap",
+                definition: "No lie, for real, I'm being serious. 'Cap' means lying, so 'no cap' means telling the truth.",
+                example: "That concert was amazing, no cap.",
+                category: "tiktok"
+            },
+            {
+                word: "mid",
+                definition: "Average, mediocre, not impressive. Short for 'middle' or 'medium quality'.",
+                example: "That movie was mid, nothing special.",
+                category: "tiktok"
+            },
+            {
+                word: "W",
+                definition: "Win or winning. Used to celebrate success or approval. Opposite of 'L' (loss).",
+                example: "Got an A on the test, huge W!",
+                category: "gaming"
+            },
+            {
+                word: "L",
+                definition: "Loss or losing. Used to express failure or disapproval. Opposite of 'W' (win).",
+                example: "Forgot my homework, that's an L.",
+                category: "gaming"
+            },
+            {
+                word: "slay",
+                definition: "To do something extremely well or look amazing. To absolutely nail it.",
+                example: "She slayed that presentation!",
+                category: "compliment"
+            },
+            {
+                word: "bet",
+                definition: "Okay, sounds good, agreed. Used to confirm plans or agreement.",
+                example: "Meet at 5? Bet.",
+                category: "tiktok"
+            },
+            {
+                word: "fanum tax",
+                definition: "Taking a portion of someone's food, named after streamer Fanum who would take his friends' food on camera.",
+                example: "Can I fanum tax your fries?",
+                category: "meme"
+            },
+            {
+                word: "mewing",
+                definition: "A tongue posture technique claimed to improve jawline. Became a meme where people go silent and pose.",
+                example: "He's been mewing for his jawline gains.",
+                category: "tiktok"
+            },
+            {
+                word: "NPC",
+                definition: "Non-Player Character. Someone acting mindlessly or without independent thought, like background characters in video games.",
+                example: "He just follows trends like an NPC.",
+                category: "gaming"
+            },
+            {
+                word: "touch grass",
+                definition: "Go outside and experience real life. Said to people spending too much time online.",
+                example: "You've been gaming for 12 hours, touch grass!",
+                category: "gaming"
+            },
+            {
+                word: "aura",
+                definition: "Someone's presence, vibe, or charisma. Can be positive or negative. Points can be 'gained' or 'lost'.",
+                example: "That comeback gave you +1000 aura points.",
+                category: "tiktok"
+            },
+            {
+                word: "cooked",
+                definition: "Finished, done for, in trouble. When a situation has gone badly wrong.",
+                example: "I forgot to study, I'm cooked.",
+                category: "tiktok"
+            },
+            {
+                word: "fr",
+                definition: "For real. Used to emphasize truth or agreement.",
+                example: "That test was hard, fr.",
+                category: "tiktok"
+            },
+            {
+                word: "ong",
+                definition: "On God. Swearing something is true, like saying 'I swear' or 'for real'.",
+                example: "I saw it happen, ong.",
+                category: "tiktok"
+            }
+        ];
+
+        let currentCategory = 'all';
+        let deferredPrompt;
+
+        // Render terms
+        function renderTerms(filteredTerms) {
+            const termsList = document.getElementById('termsList');
+            
+            if (filteredTerms.length === 0) {
+                termsList.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-emoji">🤔</div>
+                        <h2>No terms found</h2>
+                        <p>Try a different search or category</p>
+                    </div>
+                `;
+                return;
+            }
+
+            termsList.innerHTML = filteredTerms.map(term => `
+                <div class="term-card">
+                    <div class="term-header">
+                        <div class="term-word">${term.word}</div>
+                        <div class="term-category">${term.category}</div>
+                    </div>
+                    <div class="term-definition">${term.definition}</div>
+                    <div class="term-example">"${term.example}"</div>
+                </div>
+            `).join('');
+        }
+
+        // Filter terms
+        function filterTerms() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            
+            let filtered = terms;
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(term => term.category === currentCategory);
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(term => 
+                    term.word.toLowerCase().includes(searchTerm) ||
+                    term.definition.toLowerCase().includes(searchTerm) ||
+                    term.example.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            renderTerms(filtered);
+        }
+
+        // Category buttons
+        document.getElementById('categories').addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-btn')) {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.dataset.category;
+                filterTerms();
+            }
+        });
+
+        // Search
+        document.getElementById('searchBox').addEventListener('input', filterTerms);
+
+        // PWA Install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').classList.add('show');
+        });
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                document.getElementById('installPrompt').classList.remove('show');
+            }
+        });
+
+        document.getElementById('closePrompt').addEventListener('click', () => {
+            document.getElementById('installPrompt').classList.remove('show');
+        });
+
+        // Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZnVuY3Rpb24oZSkge30pOw==');
+        }
+
+        // Initial render
+        renderTerms(terms);
+    </script>
+</body>
+</html>
