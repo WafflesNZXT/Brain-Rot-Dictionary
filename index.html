@@ -53,6 +53,34 @@
             opacity: 0.9;
         }
 
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .header-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .header-btn:active {
+            transform: translateY(0);
+        }
         .search-container {
             padding: 20px;
             background: var(--bg-secondary);
@@ -216,9 +244,13 @@
 </head>
 <body>
     <div class="header">
-        <h1>🧠 Brainrot Dictionary</h1>
-        <p>Decode what your kids are saying</p>
+    <h1>Brainrot Dictionary</h1>
+    <p>Decode what your kids are saying</p>
+    <div class="header-buttons">
+        <button class="header-btn" id="randomBtn">🎲 Random</button>
+        <button class="header-btn" id="shareBtn">📤 Share</button>
     </div>
+</div>
 
     <div class="search-container">
         <input type="text" class="search-box" id="searchBox" placeholder="Search for a term... (e.g., 'skibidi', 'gyat')">
@@ -756,6 +788,38 @@
             navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZnVuY3Rpb24oZSkge30pOw==');
         }
 
+        // Random term button
+document.getElementById('randomBtn').addEventListener('click', () => {
+    const randomTerm = terms[Math.floor(Math.random() * terms.length)];
+    document.getElementById('searchBox').value = randomTerm.word;
+    currentCategory = 'all';
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('[data-category="all"]').classList.add('active');
+    filterTerms();
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+});
+
+        // Share button
+        document.getElementById('shareBtn').addEventListener('click', async () => {
+            const shareData = {
+                title: 'Brainrot Dictionary',
+                text: 'Check out this dictionary for Gen Z slang!',
+                url: window.location.href
+            };
+            
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    // Fallback: copy to clipboard
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert('Link copied to clipboard!');
+                }
+            } catch (err) {
+                console.log('Share failed:', err);
+            }
+        });
+        
         // Initial render
         renderTerms(terms);
     </script>
